@@ -43,8 +43,8 @@ locals {
   }
 }
 
-resource "aws_iam_role" "s3_access_role" {
-  name = "s3_access_role"
+resource "aws_iam_role" "android_builder_role" {
+  name = "android_builder_role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -59,19 +59,19 @@ resource "aws_iam_role" "s3_access_role" {
     ]
   })
   tags = {
-    Name = "s3_access"
+    Name = "android_builder"
   }
 }
 
-resource "aws_iam_role_policy" "s3_access_policy" {
-  name = "s3_access_policy"
-  role = aws_iam_role.s3_access_role.id
+resource "aws_iam_role_policy" "android_builder_policy" {
+  name = "android_builder_policy"
+  role = aws_iam_role.android_builder_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Action   = ["s3:*"]
+        Action   = ["s3:*", "ec2:TerminateInstances"]
         Effect   = "Allow"
         Resource = "*"
       },
@@ -79,9 +79,9 @@ resource "aws_iam_role_policy" "s3_access_policy" {
   })
 }
 
-resource "aws_iam_instance_profile" "s3_access_profile" {
-  name = "s3_access_profile"
-  role = aws_iam_role.s3_access_role.name
+resource "aws_iam_instance_profile" "android_builder_profile" {
+  name = "android_builder_profile"
+  role = aws_iam_role.android_builder_role.name
 }
 
 data "template_file" "init" {
@@ -89,13 +89,15 @@ data "template_file" "init" {
 
   vars = {
     s3_bucket_name = "${var.s3_bucket_name}"
+    repo_url       = "${var.repo_url}"
+    app_name       = "${var.app_name}"
   }
 }
 
 resource "aws_instance" "android_build_instance" {
   ami                  = var.ami_id
   instance_type        = var.instance_type
-  iam_instance_profile = aws_iam_instance_profile.s3_access_profile.name
+  iam_instance_profile = aws_iam_instance_profile.android_builder_profile.name
   key_name             = var.aws_ec2_key
   security_groups      = [aws_security_group.builder_sg.name]
   user_data            = data.template_file.init.rendered
