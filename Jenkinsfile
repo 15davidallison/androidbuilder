@@ -1,7 +1,4 @@
 pipeline {
-  environment {
-    TF_VAR_location = ${}
-  }
   agent { label 'master'}
   options {
     skipDefaultCheckout(true)
