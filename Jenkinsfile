@@ -18,7 +18,7 @@ pipeline {
       steps {
         sh 'cp ../dev.tfvars dev.tfvars'
         sh 'terraform init'
-        sh 'terraform apply -auto-approve -no-color'
+        sh 'terraform apply -var-file="dev.tfvars -auto-approve -no-color'
       }
     }
   }
