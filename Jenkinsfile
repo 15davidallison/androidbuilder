@@ -1,4 +1,7 @@
 pipeline {
+  environment {
+    TF_VAR_location = ${}
+  }
   agent { label 'master'}
   options {
     skipDefaultCheckout(true)
@@ -16,6 +19,7 @@ pipeline {
     }
     stage('terraform') {
       steps {
+        sh 'cp ../dev.tfvars dev.tfvars'
         sh 'terraform init'
         sh 'terraform apply -auto-approve -no-color'
       }
