@@ -2,6 +2,14 @@
 # main.tf: main terraform script
 ########################################
 
+terraform {
+  backend "s3" {
+    bucket = "android-builder-state-keeper"
+    key    = "key"
+    region = "us-west-2"
+  }
+}
+
 provider "aws" {
   region     = var.region
   access_key = var.aws_access_key
