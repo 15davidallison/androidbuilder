@@ -16,6 +16,7 @@ pipeline {
     }
     stage('terraform') {
       steps {
+        sh 'cat ~/.aws/credentials'
         sh 'cp ../dev.tfvars dev.tfvars'
         sh 'terraform init'
         sh 'terraform apply -var-file="dev.tfvars" -auto-approve -no-color'
