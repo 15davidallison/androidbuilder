@@ -16,6 +16,7 @@ pipeline {
     }
     stage('terraform') {
       steps {
+        sh 'sudo whoami'
         sh 'sudo su'
         sh 'cp ../credentials credentials'
         sh 'cp ../config config'
