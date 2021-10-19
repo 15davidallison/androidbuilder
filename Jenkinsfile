@@ -16,7 +16,7 @@ pipeline {
     }
     stage('terraform') {
       steps {
-        sh 'cat $AWS_SHARED_CREDENTIALS_FILE'
+        sh 'cat \$AWS_SHARED_CREDENTIALS_FILE'
         sh 'cp ../dev.tfvars dev.tfvars'
         sh 'terraform init'
         sh 'terraform apply -var-file="dev.tfvars" -auto-approve -no-color'
